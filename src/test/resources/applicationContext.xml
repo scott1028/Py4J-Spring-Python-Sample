@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+
+       xsi:schemaLocation="
+		 http://www.springframework.org/schema/beans 	
+		 http://www.springframework.org/schema/beans/spring-beans.xsd 
+		 
+		 http://www.springframework.org/schema/context 
+		 http://www.springframework.org/schema/context/spring-context.xsd 
+	
+		 http://www.springframework.org/schema/mvc 
+		 http://www.springframework.org/schema/mvc/spring-mvc.xsd		 
+       	 http://www.springframework.org/schema/util
+         http://www.springframework.org/schema/util/spring-util.xsd		 
+	">
+    <!-- Auto Injection by Annotation -->
+    <context:annotation-config/>
+    <!--  local  -->
+    <!--  @taisys-ssd-server-web  -->
+    <import resource="classpath:test-spring-hibernate-config.xml"/>
+    <!--  @JAR file  -->
+    <import resource="classpath:taisys-mail-config.xml"/>
+    <import resource="classpath:daoService-config.xml"/>
+    <!--  Access properties file form jar's xx-Context file  -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:env.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--  	Converts JSON to POJO and vice versa     -->
+    <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+    <!--   maps handler methods based on HTTP paths  -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jacksonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="datePattern" class="java.lang.String">
+        <constructor-arg value="yyyy-MM-dd"/>
+    </bean>
+    <bean id="dateTimePattern" class="java.lang.String">
+        <constructor-arg value="yyyy-MM-dd HH:mm:ss"/>
+    </bean>
+    <bean id="taisysSSDGatewayUrl" class="java.lang.String">
+        <constructor-arg value="${taisysSSDGateway.host}"/>
+    </bean>
+    <bean id="authorizePaymentEndPointUrl" class="java.lang.String">
+        <constructor-arg value="${taisysSSDGateway.authorizePaymentEndpoint}"/>
+    </bean>
+    <bean id="receiptRepositoryPath" class="java.lang.String">
+        <constructor-arg value="${receiptRepositoryPath}"/>
+    </bean>
+    <bean id="greenRoamLogoUri" class="java.lang.String">
+        <constructor-arg value="${greenRoamLogoUri}"/>
+    </bean>
+    <bean id="downloadOrderReceiptUri" class="java.lang.String">
+        <constructor-arg value="${downloadOrderReceiptUri}"/>
+    </bean>
+    <bean id="topupOrderReceiptUri" class="java.lang.String">
+        <constructor-arg value="${topupOrderReceiptUri}"/>
+    </bean>
+    <bean id="receiptType" class="java.lang.String">
+        <constructor-arg value="${receiptType}"/>
+    </bean>
+    <!-- File Path Setting -->
+    <bean id="subscriberDataImageUri" class="java.lang.String">
+        <constructor-arg value="${subscriberDataImageUri}"/>
+    </bean>
+    <bean id="subscriberDataImagePath" class="java.lang.String">
+        <constructor-arg value="${subscriberDataImagePath}"/>
+    </bean>
+    <bean id="productDataImageUri" class="java.lang.String">
+        <constructor-arg value="${productDataImageUri}"/>
+    </bean>
+    <bean id="productDataImagePath" class="java.lang.String">
+        <constructor-arg value="${productDataImagePath}"/>
+    </bean>
+    <bean id="kdtConverter" class="com.benny.app.util.provider.KdtConverter">
+        <property name="kdtServiceEndpoint" value="${kdtServiceUrl}"/>
+    </bean>
+    <!--  一個以上 plugin 有用到     -->
+    <bean id="jsonParser" class="org.json.simple.parser.JSONParser" scope="prototype"/>
+    <bean id="jsonMapService" class="com.benny.app.util.provider.JacksonJSONService" scope="prototype">
+        <property name="dataObjectClass" value="java.util.HashMap"/>
+    </bean>
+    <bean id="ssdGenerateIdService" class="com.benny.app.util.provider.SSDGenerateIdService" scope="prototype"/>
+    <bean id="base64CodingService" class="com.benny.app.util.provider.Base64CodingService" scope="prototype"/>
+    <bean id="bouncyCastleTripleDesEncryptor" class="com.benny.app.util.provider.BouncyCastleTripleDesEncryptor" scope="prototype"/>
+    <bean id="bouncyCastleTripleDesCbcEncryptor" class="com.benny.app.util.provider.BouncyCastleTripleDesCbcEncryptor" scope="prototype"/>
+    <bean id="bouncyCastleDesEncryptor" class="com.benny.app.util.provider.BouncyCastleDesEncryptor" scope="prototype"/>
+    <bean id="xmlWritingService" class="com.benny.app.util.provider.XMLWritingService" scope="prototype"/>
+    <bean id="stringUtil" class="com.benny.app.util.provider.SSDStringUtil" scope="prototype"/>
+    <bean id="dateUtil" class="com.benny.app.util.provider.DateUtil" scope="prototype"/>
+    <bean id="reportUtil" class="com.benny.app.util.provider.SSDReportUtil" scope="prototype"/>
+    <bean id="commandSsdService" class="com.benny.app.util.provider.CommandSsdService" scope="prototype"/>
+    <bean id="xPathXMLReadingService" class="com.benny.app.util.provider.XPathXMLReadingService" scope="prototype"/>
+    <bean id="taisysSSDAPDUCommand" class="com.benny.app.util.provider.TaisysSSDAPDUCommand" scope="prototype"/>
+    <bean id="sqlUtil" class="com.benny.app.util.provider.SqlUtil" scope="prototype"/>
+    <bean id="collectionUtil" class="com.benny.app.util.provider.CollectionUtil" scope="prototype"/>
+    <bean id="generateSMSService" class="com.taisys.app.ssd.sms.service.SSDGenerateSMSService" scope="prototype"/>
+
+    <bean id="xmlDigitalSignatureService" class="com.benny.app.util.provider.SimpleXMLDigitalSignatureService" scope="prototype">
+        <property name="privateKeyFilePath" value="C:/keys/privatekey.key"/>
+        <property name="publicKeyFilePath" value="C:/keys/publickey.key"/>
+    </bean>
+    <bean id="sendMessageHttpClientConnection" class="com.benny.app.util.provider.HttpClientHttpConnection" scope="prototype">
+        <property name="remoteEndPoint" value="${taisysSSDGateway.sendMessageEndPoint}"/>
+        <property name="connectionTimeOut" value="60000"/>
+    </bean>
+    <bean id="cancelPaymentHttpClientConnection" class="com.benny.app.util.provider.HttpClientHttpConnection" scope="prototype">
+        <property name="remoteEndPoint" value="${taisysSSDGateway.cancelPaymentEndPoint}"/>
+        <property name="connectionTimeOut" value="60000"/>
+    </bean>
+    <bean id="paymentHttpClientConnection" class="com.benny.app.util.provider.HttpClientHttpConnection" scope="prototype">
+        <property name="remoteEndPoint" value="${taisysSSDGateway.paySuccessNotifyEndPoint}"/>
+        <property name="connectionTimeOut" value="60000"/>
+    </bean>
+
+    <bean id="auditLogDaoService" class="com.taisys.app.ssd.daoService.AuditLogDaoService">
+        <property name="auditLogDao" ref="auditLogDao" />
+    </bean>
+    <bean id="auditLogDao" class="com.benny.app.springHibernate.core.dao.BasicEntityDAO">
+        <property name="sessionFactory" ref="sessionFactory" />
+        <property name="dataObjectClass" value="com.taisys.app.ssd.model.AuditLog" />
+    </bean>
+
+    <bean id="duoSimBatchExportDataUri" class="java.lang.String">
+        <constructor-arg value="${duoSimBatchExportDataUri}"/>
+    </bean>
+
+    <bean id="duoSimBatchImportDataPath" class="java.lang.String">
+        <constructor-arg value="${duoSimBatchImportDataPath}"/>
+    </bean>
+
+    <!-- Bo -->
+    <!--<bean id="importDuoSimBatchBO" class="com.taisys.app.duoSimBatch.ssdserver.businessObject.ImportDuoSimBatchBO" scope="prototype"/>-->
+
+</beans>

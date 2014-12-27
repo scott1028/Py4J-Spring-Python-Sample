@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+
+       xsi:schemaLocation="
+		 http://www.springframework.org/schema/beans 	
+		 http://www.springframework.org/schema/beans/spring-beans.xsd 
+		 
+		 http://www.springframework.org/schema/context 
+		 http://www.springframework.org/schema/context/spring-context.xsd 
+	
+		 http://www.springframework.org/schema/mvc 
+		 http://www.springframework.org/schema/mvc/spring-mvc.xsd		 
+       	 http://www.springframework.org/schema/util
+         http://www.springframework.org/schema/util/spring-util.xsd		 
+	">
+    <!-- Auto Injection by Annotation -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com.taisys.server"/>
+
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxActive" value="10"/>
+        <property name="maxIdle" value="10"/>
+        <property name="minIdle" value="0"/>
+        <property name="maxWait" value="60"/>
+        <property name="timeBetweenEvictionRunsMillis" value="10000"/>
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="127.0.0.1"/>
+        <constructor-arg index="2" value="6379" type="int"/>
+        <constructor-arg index="3" value="60" type="int"/>
+    </bean>
+</beans>
